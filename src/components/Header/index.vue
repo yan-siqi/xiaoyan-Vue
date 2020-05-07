@@ -149,9 +149,25 @@ export default {
           keyword2: keyword.toUpperCase(),
         },
       }).catch(()=>{});//如果抛出错误的话,使用catch接收
+       const keyword = this.keyword
+
+        const location = { // push是重写后的方法
+          name: 'search', 
+        }
+        // 如果keyword有值, 指定params
+        if (keyword) {
+          location.params = {keyword}
+        }
+
+        // 同时还要携带当前原本的query
+        const {query} = this.$route
+        location.query = query
+
+        // 跳转到Search
+        this.$router.push(location)
     },
   },
-
+       
 
 };
 </script>
