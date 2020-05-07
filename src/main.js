@@ -5,6 +5,7 @@ import router from './router';
 //在全局引入组件
 import TypeNav from './components/TypeNav'
 import store from './store'
+import './mock/mockServer'
 //typenav注册全局组件
 Vue.component('TypeNav',TypeNav);
 Vue.config.productionTip = false//去掉不是生产环境的模式
