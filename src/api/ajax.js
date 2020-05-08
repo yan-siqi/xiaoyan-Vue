@@ -1,5 +1,5 @@
 /* 
-要求:::
+要求:
 对axios进行二次封装(axios本身就是对原生ajax(xHR)的封装)   面试必说
     1. 配置通用的基础路径和超时
     2. 显示请求进度条
@@ -33,7 +33,7 @@ instance.interceptors.response.use(
     Nprogress.done();
     return response.data;
   },
-  (error) => {
+  error => {
     console.log("响应拦截器success回调执行"); //响应失败
     /* 统一处理请求的错误信息 */
     Nprogress.done();
