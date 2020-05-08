@@ -72,7 +72,7 @@ export default {
         `/search/${this.keyword}?keyword2=${this.keyword.toUpperCase()}`
       ); */
       /* 使用对象的方式 */
-      const keyword = this.keyword;
+     /*  const keyword = this.keyword; */
       /* if (keyword === "") {
         this.$router.push('/search');
       }
@@ -138,7 +138,7 @@ export default {
           keyword2: keyword.toUpperCase(),
         },
       },undefined,()=>{});//如果是有返回值的话,成功的promise返回值就是undefined */
-    this.$router.push({
+    /* this.$router.push({
         name: "search",
         params: {
           //如果是空串就传递undefined,不是就传递当前值
@@ -148,10 +148,26 @@ export default {
         query: {
           keyword2: keyword.toUpperCase(),
         },
-      }).catch(()=>{});//如果抛出错误的话,使用catch接收
+      }).catch(()=>{});//如果抛出错误的话,使用catch接收 */
+       const keyword = this.keyword
+
+        const location = { // push是重写后的方法
+          name: 'search', 
+        }
+        // 如果keyword有值, 指定params
+        if (keyword) {
+          location.params = {keyword}
+        }
+
+        // 同时还要携带当前原本的query
+        const {query} = this.$route
+        location.query = query
+
+        // 跳转到Search
+        this.$router.push(location)
     },
   },
-
+       
 
 };
 </script>
