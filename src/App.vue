@@ -20,11 +20,13 @@ import {reqBaseCategoryList,reqLogin} from './api'
 export default {
 name:'App',
 async mounted () {
-  const result = await reqBaseCategoryList();
+/*   const result = await reqBaseCategoryList();
   console.log('result',result);
   const result2 = await reqLogin('13700000000','111111');
-  console.log('result2',result2);
-
+  console.log('result2',result2); */
+// 测试调用mock接口对应的接口请求函数
+    const result = await reqFloors()
+    console.log('mock result ', result)
   //测试异步action获取异步的获取数据vuex的state  使用dispatch去触发actions
   this.$store.dispatch('getBaseCategoryList')
  // console.log(this.$store.state)

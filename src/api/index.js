@@ -3,6 +3,8 @@
 每个函数的返回值都是promise
 */
 import ajax from './ajax';
+import mockAjax from './mockAjax'
+
 //请求获取三类列表
 export function reqBaseCategoryList(){
     return ajax({
@@ -18,3 +20,5 @@ return ajax({
     data:{mobile,password}
 })
 }
+export const reqBanners = () => mockAjax('/banners')
+export const reqFloors = () => mockAjax('/floors')
