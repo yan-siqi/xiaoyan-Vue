@@ -17,10 +17,8 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-if="options.categoryName">{{options.categoryName}}<i>×</i></li>
+             <li class="with-x" v-if="options.keyword">{{options.keyword}}<i>×</i></li>
           </ul>
         </div>
         <!-- selector 使用组件 -->
@@ -498,7 +496,7 @@ export default {
     $route() {
       //this.$route得到最新的路由对象
       //this.$route
-     this.updateOptions();
+      this.updateOptions();
       //发送请求获取数据
       this.$store.dispatch("getProductList", this.options);
     },
@@ -526,10 +524,11 @@ export default {
 
     this.$store.dispatch("getProductList", this.options); //分发事件
   },
-  methods: {//封装函数,在beforemounted和watch中直接调用
+  methods: {
+    //封装函数,在beforemounted和watch中直接调用
     updateOptions() {
-    //根据query和params参数去请求更新options数据
-     const {
+      //根据query和params参数去请求更新options数据
+      const {
         categoryName,
         category1Id,
         category2Id,
