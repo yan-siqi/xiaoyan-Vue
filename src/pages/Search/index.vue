@@ -17,8 +17,12 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x" v-if="options.categoryName">{{options.categoryName}}<i>×</i></li>
-             <li class="with-x" v-if="options.keyword">{{options.keyword}}<i>×</i></li>
+            <li class="with-x" v-if="options.categoryName">
+              {{ options.categoryName }} <i @click="removeCategory">×</i>
+            </li>
+            <li class="with-x" v-if="options.keyword">
+              {{ options.keyword }} <i @click="removeKeyword">×</i>
+            </li>
           </ul>
         </div>
         <!-- selector 使用组件 -->
@@ -543,6 +547,29 @@ export default {
         category3Id,
         keyword, //以上的数据会覆盖options中的数据
       };
+    },
+    /* 移除分类的搜索条件 */
+    removeCategory() {
+      //重置分类的搜索条件
+      this.options.categoryName = "";
+      this.options.category1Id = "";
+      this.options.category2Id = "";
+      this.options.category3Id = "";
+      //重新发送请求获取数据
+      //this.$store.dispatch("getProductList", this.options);
+      //this.$router.push(this.$route.path); //$route.path不带query参数,但是如果有params参数是要携带的
+      this.$router.replace(this.$route.path);
+    },
+    removeKeyword() {
+      //重置分类条件数据
+      this.options.keyword = "";
+      //重新发送请求数据
+      //this.$store.dispatch("getProductList", this.options);
+      //只是携带原本的query参数
+      //this.$router.push({ name: "search", query: this.$route.query });
+      //解决多次重复跳转search的问题?使用replace代替push
+      this.$router.replace({ name: "search", query: this.$route.query });
+      this.$bus.$emit("removeKeyword");
     },
   },
   components: {

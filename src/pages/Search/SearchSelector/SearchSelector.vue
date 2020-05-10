@@ -5,7 +5,7 @@
       <div class="fl key brand">品牌</div>
       <div class="value logos">
         <ul class="logo-list">
-          <li v-for="tm in trademarkList" :key="tm.tmId">{{tm.tmName}}</li>
+          <li v-for="tm in trademarkList" :key="tm.tmId">{{ tm.tmName }}</li>
         </ul>
       </div>
       <div class="ext">
@@ -14,31 +14,29 @@
       </div>
     </div>
     <div class="type-wrap" v-for="attr in attrsList" :key="attr.attrId">
-      <div class="fl key">{{attr.attrName}}</div>
+      <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
         <ul class="type-list">
           <li v-for="value in attr.attrValueList" :key="value">
-            <a href="javascript:void(0);">{{value}}</a>
+            <a href="javascript:void(0);">{{ value }}</a>
           </li>
-
         </ul>
       </div>
       <div class="fl ext"></div>
     </div>
-   
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex'//将vuex中的额数据读到mapstate中
+import { mapState } from "vuex"; //将vuex中的额数据读到mapstate中
 export default {
   name: "SearchSelector",
-  computed:{
+  computed: {
     ...mapState({
-      trademarkList:state=>state.search.productList.trademarkList,//读取品牌列表
-      attrsList:state=>state.search.productList.attrsList//读取属性列表
-    })
-  }
+      trademarkList: (state) => state.search.productList.trademarkList, //读取品牌列表
+      attrsList: (state) => state.search.productList.attrsList, //读取属性列表
+    }),
+  },
 };
 </script>
 

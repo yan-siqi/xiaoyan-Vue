@@ -60,6 +60,13 @@ export default {
       keyword: "atguigu",
     };
   },
+  mounted() {
+    //绑定事件监听来接收消息,更新数据
+    this.$bus.$on("removeKeyword", () => {
+      //使用箭头函数,便是当前组件对象
+      this.keyword = "";
+    });
+  },
   methods: {
     search() {
       /* 字符串的形式 */
@@ -72,7 +79,7 @@ export default {
         `/search/${this.keyword}?keyword2=${this.keyword.toUpperCase()}`
       ); */
       /* 使用对象的方式 */
-     /*  const keyword = this.keyword; */
+      /*  const keyword = this.keyword; */
       /* if (keyword === "") {
         this.$router.push('/search');
       }
@@ -89,7 +96,7 @@ export default {
           name: "search",
           params: {
             //如果是空串就传递undefined,不是就传递当前值
-             //keyword:this.keyword 
+             //keyword:this.keyword
             keyword: keyword,
           },
           query: {
@@ -98,7 +105,7 @@ export default {
         });
       } */
       /* 对象写法2 */
- /*      this.$router.push({
+      /*      this.$router.push({
         name: "search",
         params: {
           //如果是空串就传递undefined,不是就传递当前值
@@ -109,14 +116,14 @@ export default {
           keyword2: keyword.toUpperCase(),
         },
       }); */
-       /* 
+      /*
         问题: 编程式路由跳转到当前路由(参数不变), 会抛出NavigationDuplicated的警告错误
         router.push(location, onComplete?, onAbort?): 如果直接指定了回调函数, push方法没有返回值
         router.push(location).then(onComplete).catch(onAbort)
             如果没有直接指定回调函数, push方法返回值为promise
             如果指定的是当前路由路径且参数数据不变化, push内部就会抛出一个失败的promise
         */
-       /* this.$router.push({
+      /* this.$router.push({
         name: "search",
         params: {
           //如果是空串就传递undefined,不是就传递当前值
@@ -127,7 +134,7 @@ export default {
           keyword2: keyword.toUpperCase(),
         },
       },()=>{}); //指定成功的额回调函数,hi返回一个成功的promise*/
-/*       this.$router.push({
+      /*       this.$router.push({
         name: "search",
         params: {
           //如果是空串就传递undefined,不是就传递当前值
@@ -138,7 +145,7 @@ export default {
           keyword2: keyword.toUpperCase(),
         },
       },undefined,()=>{});//如果是有返回值的话,成功的promise返回值就是undefined */
-    /* this.$router.push({
+      /* this.$router.push({
         name: "search",
         params: {
           //如果是空串就传递undefined,不是就传递当前值
@@ -149,26 +156,30 @@ export default {
           keyword2: keyword.toUpperCase(),
         },
       }).catch(()=>{});//如果抛出错误的话,使用catch接收 */
-       const keyword = this.keyword
+      const keyword = this.keyword;
 
-        const location = { // push是重写后的方法
-          name: 'search', 
-        }
-        // 如果keyword有值, 指定params
-        if (keyword) {
-          location.params = {keyword}
-        }
+      const location = {
+        // push是重写后的方法
+        name: "search",
+      };
+      // 如果keyword有值, 指定params
+      if (keyword) {
+        location.params = { keyword };
+      }
 
-        // 同时还要携带当前原本的query
-        const {query} = this.$route
-        location.query = query
+      // 同时还要携带当前原本的query
+      const { query } = this.$route;
+      location.query = query;
 
-        // 跳转到Search
-        this.$router.push(location)
+      // 跳转到Search
+      //判断如果当前是search就是用repalce 反之使用push
+      //同时判断是否路径为search的时候也可以 this.$route.path,indexOf('/search')===0//表示当前路径是以/search开头或者就是search
+      if(this.$route.name==='search'){
+        this.$router.replace(location);
+      }
+      this.$router.push(location);
     },
   },
-       
-
 };
 </script>
 

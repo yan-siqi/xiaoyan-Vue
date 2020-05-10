@@ -152,7 +152,10 @@ export default {
           location.params = { keyword };
         }
         //然后跳转到相应的路由(search)
-        this.$router.push(location);
+        if(this.$route.path.indexOf('/search')===0){
+        this.$router.replace(location);
+      }
+      this.$router.push(location);
         //隐藏一级列表
         this.hideCategorys();
       }
