@@ -38,10 +38,10 @@
             class="input-error input-xxlarge"
             v-model="keyword"
           />
+          <!-- 阻止浏览器的默认提交表单行为 -->
           <button
             class="sui-btn btn-xlarge btn-danger"
-            type="button"
-            @click="search"
+            @click.prevent="search"
           >
             搜索
           </button>

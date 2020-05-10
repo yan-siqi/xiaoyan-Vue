@@ -23,10 +23,21 @@
             <li class="with-x" v-if="options.keyword">
               {{ options.keyword }} <i @click="removeKeyword">×</i>
             </li>
+            <!-- 显示trademark -->
+            <li class="with-x" v-if="options.trademark">
+              {{ options.trademark }} <i @click="removeTrademark">×</i>
+            </li>
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="prop"
+            >
+              {{ prop }} <i @click="removeProp(index)">×</i>
+            </li>
           </ul>
         </div>
         <!-- selector 使用组件 -->
-        <SearchSelector />
+        <SearchSelector :setTrademark="setTrademark" :addProp="addProp" />
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
@@ -570,6 +581,37 @@ export default {
       //解决多次重复跳转search的问题?使用replace代替push
       this.$router.replace({ name: "search", query: this.$route.query });
       this.$bus.$emit("removeKeyword");
+    },
+    /* 设置新的品牌条件数据 */
+    setTrademark(trademark) {
+      //更新options中的额trademark
+      this.options.trademark = trademark;
+      //更新请求获取商品列表显示数据
+      this.$store.dispatch("getProductList", this.options);
+    },
+    /* 删除品牌的搜索条件 */
+    removeTrademark() {
+      //重置数据
+      this.options.trademark = "";
+      //重新获取商品列表显示
+      this.$store.dispatch("getProductList", this.options);
+    },
+    /* 添加属性条件 此时如果直接添加会出现重复的添加额问题,所以要添加判断*/
+    addProp(attrId, value, attrName) {
+      const prop = `${attrId}:${value}:${attrName}`;
+      //如果已经添加了属性直接结束indexof在数组和字符串中可以使用
+      if (this.options.props.indexOf(prop) !== -1) return;
+      //向options中添加一个prop
+      this.options.props.push(prop);
+      //重新请求数据进行显示
+      this.$store.dispatch("getProductList", this.options);
+    },
+    /* 删除一个属性/删除所对应的下标 */
+    removeProp(index) {
+      //删除
+      this.options.props.splice(index, 1);
+      //重新发送请求数据,列表显示
+      this.$store.dispatch('getProductList',this.options)
     },
   },
   components: {
