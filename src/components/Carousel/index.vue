@@ -22,6 +22,10 @@ export default {
   props: {
     //声明接收的属性
     carouselList: Array,
+    autoplay:{
+      type:Boolean,//类型是布尔类型
+      default:true//默认是自动轮播
+    }
   },
   watch: {
     //监视 carouselList变化的回调函数,banners从undefined变成[...]
@@ -48,6 +52,8 @@ export default {
     initSwiper() {
       new Swiper(this.$refs.swiper, {
         loop: true, //事件循环模式
+        //autoplay:true,//让其自动轮播
+        autoplay:this.autoplay,
         // 如果需要分页器
         pagination: {
           el: ".swiper-pagination",
