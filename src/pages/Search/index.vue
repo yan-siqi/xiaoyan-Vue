@@ -53,17 +53,17 @@
           </div>
           <div class="goods-list">
             <ul class="yui3-g">
-              <li class="yui3-u-1-5">
+              <li class="yui3-u-1-5" v-for="goods in productList.goodsList" :key="goods.id">
                 <div class="list-wrap">
                   <div class="p-img">
                     <a href="item.html" target="_blank"
-                      ><img src="./images/mobile01.png"
+                      ><img :src="goods.defaultImg"
                     /></a>
                   </div>
                   <div class="price">
                     <strong>
                       <em>¥</em>
-                      <i>6088.00</i>
+                      <i>{{goods.price}}</i>
                     </strong>
                   </div>
                   <div class="attr">
@@ -71,9 +71,7 @@
                       target="_blank"
                       href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
-                      >Apple苹果iPhone 6s (A1699)Apple苹果iPhone 6s
-                      (A1699)Apple苹果iPhone 6s (A1699)Apple苹果iPhone 6s
-                      (A1699)</a
+                      >{{goods.title}}</a
                     >
                   </div>
                   <div class="commit">
@@ -463,13 +461,37 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import SearchSelector from "./SearchSelector/SearchSelector";
 export default {
   name: "Search",
   //props:['keyword3','keyword4']
+  data() {
+    return {
+      options: {
+        //包含所有请求的参数的数据对象
+        category1Id: "",
+        category2Id: "",
+        category3Id: "",
+        categoryName: "",
+        keyword: "",
+        trademark: "",
+        props: [],
+        order: "1:desc",
+        pageNo: "1",
+        pageSize: "10",
+      },
+    };
+  },
+  computed: {
+    ...mapState({
+      productList: state=>state.search.productList,
+      //展示商品信息
+    }),
+  },
   mounted() {
     //分发事件
-    this.$store.dispatch("getProductlist", {
+    /*  this.$store.dispatch("getProductlist", {
     "category3Id": "61",
     "categoryName": "手机",
     "keyword": "小米",
@@ -478,7 +500,10 @@ export default {
     "pageSize": 10,
     "props": ["1:1700-2799:价格", "2:6.65-6.74英寸:屏幕尺寸"],
     "trademark": "4:小米"
-    });
+    }); */
+    //也可以从data中直接处理数据
+    const options = this.options;
+    this.$store.dispatch("getProductList", options);//分发事件
   },
   components: {
     //注册组件

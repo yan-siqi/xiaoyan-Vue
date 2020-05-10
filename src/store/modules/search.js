@@ -13,7 +13,7 @@ const mutations = {
 const actions = {
   /* 获取商品的异步actions */
   //发送请求,有结果之后提交mutations,解构语法
-  async getProductlist({ commit }, searchParams) {
+  async getProductList({ commit }, searchParams) {
     //获取所有的包含搜索数据的对象
     const result = await reqProductList(searchParams); //调用包含所有参数的对象.需要传递参数
     if (result.code === 200) {
