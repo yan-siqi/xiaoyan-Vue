@@ -53,7 +53,11 @@
           </div>
           <div class="goods-list">
             <ul class="yui3-g">
-              <li class="yui3-u-1-5" v-for="goods in productList.goodsList" :key="goods.id">
+              <li
+                class="yui3-u-1-5"
+                v-for="goods in productList.goodsList"
+                :key="goods.id"
+              >
                 <div class="list-wrap">
                   <div class="p-img">
                     <a href="item.html" target="_blank"
@@ -63,7 +67,7 @@
                   <div class="price">
                     <strong>
                       <em>¥</em>
-                      <i>{{goods.price}}</i>
+                      <i>{{ goods.price }}</i>
                     </strong>
                   </div>
                   <div class="attr">
@@ -71,7 +75,7 @@
                       target="_blank"
                       href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
-                      >{{goods.title}}</a
+                      >{{ goods.title }}</a
                     >
                   </div>
                   <div class="commit">
@@ -485,11 +489,27 @@ export default {
   },
   computed: {
     ...mapState({
-      productList: state=>state.search.productList,
+      productList: (state) => state.search.productList,
       //展示商品信息
     }),
   },
+  watch: {
+    //使用一般监视,路由跳转只有路由参数发生了变化
+    $route() {
+      //this.$route得到最新的路由对象
+      //this.$route
+     this.updateOptions();
+      //发送请求获取数据
+      this.$store.dispatch("getProductList", this.options);
+    },
+  },
+  beforeMount() {
+    //执行同步操作更新状态数据
+    //根据query和params参数更新options
+    this.updateOptions();
+  },
   mounted() {
+    //更新的是异步操作,同步操作不建议<==>发送请求的时候
     //分发事件
     /*  this.$store.dispatch("getProductlist", {
     "category3Id": "61",
@@ -503,7 +523,28 @@ export default {
     }); */
     //也可以从data中直接处理数据
     const options = this.options;
-    this.$store.dispatch("getProductList", options);//分发事件
+
+    this.$store.dispatch("getProductList", this.options); //分发事件
+  },
+  methods: {//封装函数,在beforemounted和watch中直接调用
+    updateOptions() {
+    //根据query和params参数去请求更新options数据
+     const {
+        categoryName,
+        category1Id,
+        category2Id,
+        category3Id,
+      } = this.$route.query;
+      const { keyword } = this.$route.params;
+      this.options = {
+        ...this.options, //解构对象,然后再将解构完成的值放到options对象中,最开始是undefined
+        categoryName,
+        category1Id,
+        category2Id,
+        category3Id,
+        keyword, //以上的数据会覆盖options中的数据
+      };
+    },
   },
   components: {
     //注册组件
