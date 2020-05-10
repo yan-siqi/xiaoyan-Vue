@@ -38,7 +38,10 @@
             class="input-error input-xxlarge"
             v-model="keyword"
           />
-          <!-- 阻止浏览器的默认提交表单行为 -->
+          <!-- 阻止浏览器的默认提交表单行为 注意此时点击enter键直接触发事件-->
+          <!-- 
+            绑定事件监听的方式;@click.prevent和form表单上的@submit.prevent事件效果相同,触发的方式:点击enter键/点击搜索按钮直接触发
+           -->
           <button
             class="sui-btn btn-xlarge btn-danger"
             @click.prevent="search"
