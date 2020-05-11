@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex"; //将vuex中的额数据读到mapstate中
+import { mapState,mapGetters } from "vuex"; //将vuex中的额数据读到mapstate中
 export default {
   name: "SearchSelector",
   props:{
@@ -38,10 +38,14 @@ export default {
     addProp:Function//更新父组件的props数据的函数
   },
   computed: {
-    ...mapState({
+    /* ...mapState({
       trademarkList: (state) => state.search.productList.trademarkList, //读取品牌列表
       attrsList: (state) => state.search.productList.attrsList, //读取属性列表
-    }),
+    }), */
+    ...mapGetters({
+      trademarkList:'trademarkList',
+      attrsList:'attrsList'
+    })
   },
 };
 </script>

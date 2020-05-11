@@ -23,5 +23,12 @@ const actions = {
     }
   },
 };
-const getters = {};
+const getters = {
+  trademarkList(state){
+    return state.productList.trademarkList||[]
+  },
+  attrsList(state){
+    return state.productList.attrsList||[]
+  }
+};
 export default { state, mutations, actions, getters };//一定要默认暴露,不然是undefined
