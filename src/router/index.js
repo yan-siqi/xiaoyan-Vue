@@ -39,5 +39,9 @@ export default new VueRouter({
   //处理#
   mode:'history',//不带#
   /* 配置所有路由--->使用数组 */
-  routes
+  routes,//配置所有路由
+  scrollBehavior(to,from,savedPosition){
+    //在跳转路由的时候,滚动条自动滚动到x,y轴的起始位置
+    return {x:0,y:0}
+  }
 });

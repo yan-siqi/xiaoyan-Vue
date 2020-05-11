@@ -43,8 +43,19 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  class="active"
+                  :class="{ active: isActive('1') }"
+                  @click="setOrder('1')"
+                >
+                  <a href="javascript:"
+                    >综合
+                    <i
+                      class="iconfont"
+                      :class="orderIcon"
+                      v-if="isActive('1')"
+                    ></i>
+                  </a>
                 </li>
                 <li>
                   <a href="#">销量</a>
@@ -55,11 +66,15 @@
                 <li>
                   <a href="#">评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isActive('2') }" @click="setOrder('2')">
+                  <a href="javascript:"
+                    >价格
+                    <i
+                      class="iconfont"
+                      :class="orderIcon"
+                      v-if="isActive('2')"
+                    ></i>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -73,9 +88,11 @@
               >
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"
-                      ><img :src="goods.defaultImg"
-                    /></a>
+                    <!-- <a href="item.html" target="_blank"
+                      ></a> -->
+                    <router-link :to="`/detail/${goods.id}`">
+                      <img :src="goods.defaultImg"
+                    /></router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -84,12 +101,15 @@
                     </strong>
                   </div>
                   <div class="attr">
-                    <a
+                  <!--   <a
                       target="_blank"
                       href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
                       >{{ goods.title }}</a
-                    >
+                    > -->
+                    <router-link :to="`/detail/${goods.id}`">
+                      {{ goods.title }}
+                    </router-link>
                   </div>
                   <div class="commit">
                     <i class="command">已有<span>2000</span>人评价</i>
@@ -442,35 +462,13 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination
+            :currentPage="options.pageNo"
+            :pageSize="options.pageSize"
+            :total="productList.total"
+            :showPageNo="3"
+            @currentChage="handlCurrentChange"
+          />
         </div>
       </div>
     </div>
@@ -492,11 +490,11 @@ export default {
         category3Id: "",
         categoryName: "",
         keyword: "",
-        trademark: "",
+        //trademark: "",
         props: [],
-        order: "1:desc",
-        pageNo: "1",
-        pageSize: "10",
+        order: "1:desc", //排序方式
+        pageNo: 1, //当前页码
+        pageSize: 5, //每页的数量
       },
     };
   },
@@ -505,6 +503,12 @@ export default {
       productList: (state) => state.search.productList,
       //展示商品信息
     }),
+    /* 计算排序方式的icon类名 */
+    orderIcon() {
+      return this.options.order.split(":")[1] === "desc"
+        ? "icondown"
+        : "iconup";
+    },
   },
   watch: {
     //使用一般监视,路由跳转只有路由参数发生了变化
@@ -585,16 +589,25 @@ export default {
     /* 设置新的品牌条件数据 */
     setTrademark(trademark) {
       //更新options中的额trademark
-      this.options.trademark = trademark;
+      //this.options.trademark = trademark;
+      //判断options中是否有trademark,如果有直接用没有,需要使用set来添加
+      if (!this.options.hasOwnProperty("trademark")) {
+        this.$set(this.options, "trademark", trademark);
+      } else {
+        this.options.trademark = trademark;
+      }
       //更新请求获取商品列表显示数据
       this.$store.dispatch("getProductList", this.options);
     },
     /* 删除品牌的搜索条件 */
     removeTrademark() {
       //重置数据
-      this.options.trademark = "";
+      //this.options.trademark = "";
+      //如果直接删除的话,不会更新界面
+      //正确的删除方式
+      this.$delete(this.options, "trademark"); //会自动更新界面
       //重新获取商品列表显示
-      this.$store.dispatch("getProductList", this.options);
+      //this.$store.dispatch("getProductList", this.options);
     },
     /* 添加属性条件 此时如果直接添加会出现重复的添加额问题,所以要添加判断*/
     addProp(attrId, value, attrName) {
@@ -611,7 +624,34 @@ export default {
       //删除
       this.options.props.splice(index, 1);
       //重新发送请求数据,列表显示
-      this.$store.dispatch('getProductList',this.options)
+      this.$store.dispatch("getProductList", this.options);
+    },
+    /* 设置新的排序 */
+    setOrder(flag) {
+      let [orderFlag, orderType] = this.options.order.split(":");
+      //点击当前排序项,切换排序项
+      if (flag === orderFlag) {
+        orderType = orderType === "desc" ? "asc" : "desc";
+      } else {
+        //点击如果不是当前排序项,就切换排序项,排序方式,是降序
+        orderFlag = flag;
+        orderType = "desc";
+      }
+      //设置新的order值
+      this.options.order = orderFlag + ":" + orderType;
+      //重新请求显示
+      this.$store.dispatch("getProductList", this.options);
+    },
+    /* 判断指定的flag的排序项是否是当前项 */
+    isActive(orderFlag) {
+      return this.options.order.indexOf(orderFlag) === 0;
+    },
+    /* 选择改变当前页码时的事件的监听回调 */
+    handlCurrentChange(currentPage) {
+      //更新options中的pageNo
+      this.options.pageNo = currentPage;
+      //请求获取指定页码的数据显示
+      this.$store.dispatch("getProductList", this.options);
     },
   },
   components: {

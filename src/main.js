@@ -7,10 +7,12 @@ import router from './router';
 import TypeNav from './components/TypeNav'
 import Carousel from '@/components/Carousel'
 import store from './store'
+import Pagination from '@/components/Pagination'
 import './mock/mockServer'
 //typenav注册全局组件
 Vue.component('TypeNav',TypeNav);
 Vue.component('Carousel',Carousel)
+Vue.component('Pagination', Pagination)//复用性很高,注册全局组件
 Vue.config.productionTip = false//去掉不是生产环境的模式
 
 new Vue({
