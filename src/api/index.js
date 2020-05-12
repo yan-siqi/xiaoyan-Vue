@@ -42,6 +42,8 @@ export const reqProductList=(searchParams)=>ajax({
     "props": ["1:1700-2799:价格", "2:6.65-6.74英寸:屏幕尺寸"],
     "trademark": "4:小米"
   }) */
-  /* 获取指定的id商品信息 */
+  /* 获取指定的id商品信息 :/api/item/{ skuId } */
   export const reqProduct = (skuId) => ajax(`/item/${skuId}`) 
   reqProduct(6)
+  /* 添加到购物车 : /api/cart/addToCart/{ skuId }/{ skuNum }*/
+  export const reqAddToCart=(skuId,skuNum)=>ajax.post(`/cart/addToCart/${skuId}/${skuNum}`)
