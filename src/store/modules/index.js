@@ -5,11 +5,12 @@
 import home from './home'
 import user from './user'
 import search from './search'//定义新的模块需要注册到对象中去
-
+import detail from './detail'
 export default {
   home,
   user,
-  search
+  search,
+  detail
 }
 
 /* 

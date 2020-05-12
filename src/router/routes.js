@@ -44,7 +44,7 @@ export default [
     name: "detail", //当前路由的e标识名称
     //指定带:的路径,必须指定name属性来标识当前路由
     /* 传递参数 (站位) -->该关键字 ? 标识keyWord可以有也可以没有*/
-    path: "/detail/:id",
+    path: "/detail/:skuId",
     component: Detail,
     /* 将query参数和param参数映射为属性 传入路由组件*/
   },
