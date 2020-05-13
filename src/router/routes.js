@@ -4,6 +4,8 @@ import Search from "@/pages/Search";
 import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import Detail from "@/pages/Detail";
+import AddCartSuccess from "@/pages/AddCartSuccess";
+import ShopCart from "@/pages/ShopCart";
 export default [
   /* 注意路由路径名小写.路由组件名大写 */
   {
@@ -48,4 +50,12 @@ export default [
     component: Detail,
     /* 将query参数和param参数映射为属性 传入路由组件*/
   },
+  {
+    path: "/addcartsuccess",
+    component: AddCartSuccess,
+  },
+  {
+    path:'/shopcart',
+    component:ShopCart
+  }
 ];

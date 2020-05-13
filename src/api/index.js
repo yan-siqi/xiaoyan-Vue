@@ -45,5 +45,11 @@ export const reqProductList=(searchParams)=>ajax({
   /* 获取指定的id商品信息 :/api/item/{ skuId } */
   export const reqProduct = (skuId) => ajax(`/item/${skuId}`) 
   reqProduct(6)
-  /* 添加到购物车 : /api/cart/addToCart/{ skuId }/{ skuNum }*/
+  /* 添加到购物车 : /api/cart/addToCart/{ skuId }/{ skuNum :增加或者减少的数量}*/
   export const reqAddToCart=(skuId,skuNum)=>ajax.post(`/cart/addToCart/${skuId}/${skuNum}`)
+  /* 获取购物车列表 */
+  export const reqCartList=()=>ajax('/cart/cartList')
+/* 切换商品的选中状态  skuId代表的是商品的id,isChecked代表商品是被选中还是不选中,代表选中,代表取消选中*/
+export const reqCheckCartItem=(skuId,isChecked)=>ajax(`/cart/checkCart/${skuId}/${isChecked}`)
+/* 删除商品 */
+export const reqDeleteCartItem=()=>ajax.delete(`/cart/deleteCart/${skuId}`)

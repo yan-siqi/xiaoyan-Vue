@@ -11,6 +11,7 @@ import axios from "axios";
 //引入显示进度条的 js 和css
 import Nprogress from "nprogress";
 import "nprogress/nprogress.css";
+import store from '@/store'
 
 /* 1.配置通用的基础路径 */
 const instance = axios.create({
@@ -23,6 +24,8 @@ const instance = axios.create({
 instance.interceptors.request.use(config => {
   console.log("设置请求拦截器");
   Nprogress.start();
+  /* 每次请求都携带一个userTempId的请求头,数据存在state中 */
+  config.headers.userTempId=store.state.user.userTempId
   return config;
 
 });

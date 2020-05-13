@@ -416,7 +416,14 @@ export default {
         const skuNum = this.skuNum;
         try{
        await this.$store.dispatch('addToCart3',{skuId,skuNum})
-       alert('客户,您已经添加成功,准备跳转页面')
+       /* alert('客户,您已经添加成功,准备跳转页面') */
+       //在sessionStorage中保存skuInfo,注意只能解析字符串格式的数据
+       window.sessionStorage.setItem('SKU_INFO_KEY',JSON.stringify(this.skuInfo))
+        //跳转到添加成功的界面
+        this.$router.push({
+          path:'/addcartsuccess',
+          query:{skuNum}
+        })
         } catch(error){
         alert(error.message)
         }
