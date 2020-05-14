@@ -55,7 +55,21 @@ export default [
     component: AddCartSuccess,
   },
   {
-    path:'/shopcart',
-    component:ShopCart
-  }
+    path: "/shopcart",
+    component: ShopCart,
+  },
+  {
+    path: "/register",
+    component: Register,
+    meta: {
+      isHideFooter: true,
+    },
+  },
+  {
+    path: "/login",
+    component: Login,
+    meta: {
+      isHideFooter: true,
+    },
+  },
 ];

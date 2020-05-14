@@ -10,3 +10,10 @@ import{v4 as uuid4} from 'uuid'
     }
     return userTempId
   }
+export function saveUserInfo(userInfo){
+  //在local中保存用户信息
+  localStorage.setItem('USER_INFO_KEY',JSON.stringify(userInfo))
+}
+export function getUserInfo(){
+  return JSON.parse(localStorage.getItem('USER_INFO_KEY'))||{}//如果有值就解析没有的话给他传一个空对象
+}

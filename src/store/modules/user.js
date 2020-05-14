@@ -12,13 +12,47 @@
     localStorage.setItem('USER_TEMP_ID_LEY',userTempId)
   }
 } */
-import {getUserTempId} from '@/utils'
-export default  {
+import { getUserTempId, saveUserInfo, getUserInfo } from "@/utils";
+/* 用户登录注册和登出 */
+import { reqLogin, reqRegister, reqLogOut } from "@/api";
+export default {
   state: {
-    userInfo: {},
-    userTempId:getUserTempId()//用户临时Id,只执行一次
+    userInfo: getUserInfo(),//从local中读取保存的用户信息作为初始值
+    userTempId: getUserTempId(), //用户临时Id,只执行一次
   },
-  mutations: {},
-  actions: {},
+  mutations: {
+    RESIVE_USER_INFO(state, { userInfo }) {
+      state.userInfo = userInfo;
+    },
+  },
+  actions: {
+    /* 注册的异步actions */
+    async register(context, userInfo) {
+      const result = await reqRegister(userInfo);
+      if (result.code !== 200) {
+        throw new Error(
+          result.data || result.message || "抱歉注册失败,请重新注册"
+        );
+      }
+    },
+    /* 登录的异步action */
+    async login({ commit }, { mobile, password }) {
+      const result = await reqLogin(mobile, password);
+      if (result.code === 200) {
+        //登录成功,获取用户信息对象
+        const userInfo = result.data;
+        //将用户信息提交给mutation保存到state中
+        commit("RESIVE_USER_INFO", { userInfo });
+        //如果想要保准用户数据在下次重新打开浏览器是存在
+        //存到locallyStorage中
+        saveUserInfo(userInfo);
+      } else {
+        //如果登录失败了
+        throw new Error(
+          result.data || result.message || "抱歉用户登录失败哦,请重新登陆"
+        );
+      }
+    },
+  },
   getters: {},
-}
+};
