@@ -14,6 +14,11 @@ export function saveUserInfo(userInfo){
   //在local中保存用户信息
   localStorage.setItem('USER_INFO_KEY',JSON.stringify(userInfo))
 }
+/* 读取保存在local用户信息 */
 export function getUserInfo(){
   return JSON.parse(localStorage.getItem('USER_INFO_KEY'))||{}//如果有值就解析没有的话给他传一个空对象
+}
+/* 清除保存在localstorage的用户信息 */
+export function removeUserInfo(){
+  localStorage.removeItem('USER_INFO_KEY')
 }

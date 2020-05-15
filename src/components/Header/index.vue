@@ -7,7 +7,7 @@
           <p>尚品汇欢迎您！</p>
           <p v-if="userInfo.name">
             <span>{{userInfo.nickName}}</span>
-            <a href="javascript:">登出</a>
+            <a href="javascript:" @click="logout">登出</a>
           </p>
           <p v-else>
             <span>请</span>
@@ -16,7 +16,7 @@
           </p>
         </div>
         <div class="typeList">
-          <a href="###">我的订单</a>
+          <router-link to="/center/myorder">我的订单</router-link>
           <router-link to="/shopcart">我的购物车</router-link>
           <a href="###">我的尚品汇</a>
           <a href="###">尚品汇会员</a>
@@ -35,7 +35,7 @@
         </router-link>
       </h1>
       <div class="searchArea">
-        <form action="###" class="searchForm">
+        <form action="/xxx" class="searchForm">
           <input
             type="text"
             id="autocomplete"
@@ -65,7 +65,7 @@ export default {
   data() {
     return {
       /* 默认值 */
-      keyword: "atguigu",
+      keyword: "",
     };
   },
   mounted() {
@@ -187,11 +187,16 @@ export default {
       // 跳转到Search
       //判断如果当前是search就是用repalce 反之使用push
       //同时判断是否路径为search的时候也可以 this.$route.path,indexOf('/search')===0//表示当前路径是以/search开头或者就是search
-      if(this.$route.name==='search'){
+      if(this.$route.path.indexOf('/search')===0){
         this.$router.replace(location);
       }
       this.$router.push(location);
     },
+    logout(){
+      if(window.confirm('你确定要退出吗')){
+        this.$store.dispatch('logout')
+      }
+    }
   },
 };
 </script>

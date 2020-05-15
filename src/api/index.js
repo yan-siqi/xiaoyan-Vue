@@ -60,6 +60,8 @@ export function reqLogin(mobile, password) {
 }
 /* 用户注册 */
 export const reqRegister = (userInfo) =>
-  ajax.post("/user/passport/register", userInfo);
+  ajax.post("/user/passport/register", userInfo)
   /* 用户推出登录 */
   export const reqLogout = () => ajax('/user/passport/logout')
+  /* 获取我的订单列表 */
+  export const reqMyOrders=(page,limit)=>ajax(`/order/auth/${page}/${limit}`)

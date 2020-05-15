@@ -1,55 +1,71 @@
 <template>
-  <div class="register-container">
+   <div class="register-container">
     <!-- 注册内容 -->
     <div class="register">
-      <h3>
-        注册新用户
-        <span class="go"
-          >我有账号，去
-          <router-link to="/login" target="_blank">登陆</router-link>
+      <h3>注册新用户
+        <span class="go">我有账号，去 <router-link to="/login">登陆</router-link>
         </span>
       </h3>
-      <div class="content">
-        <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" v-model="mobile" />
-        <!-- <span class="error-msg">错误提示信息</span> -->
-      </div>
-      <div class="content">
-        <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" v-model="code" />
-        <!-- 实质上已经跨域了,但是http请求跨域不会出问题,只有ajax跨域会出问题 -->
-        <!-- <img ref="code" src="http://182.92.128.115/api/user/passport/code" alt="code"> -->
-        <img
-          ref="code"
-          src="/api/user/passport/code"
-          alt="code"
-          @click="updateCode"
-        />
-        <a href="javascript:" @click="updateCode">换一个</a>
-        <!-- <span class="error-msg">错误提示信息</span> -->
-      </div>
-      <div class="content">
-        <label>登录密码:</label>
-        <input
-          type="text"
-          placeholder="请输入你的登录密码"
-          v-model="password"
-        />
-        <!-- <span class="error-msg">错误提示信息</span> -->
-      </div>
-      <div class="content">
-        <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" v-model="password2" />
-        <!--  <span class="error-msg">错误提示信息</span> -->
-      </div>
-      <div class="controls">
-        <input name="m1" type="checkbox" v-model="isAgree" />
-        <span>同意协议并注册《尚品汇用户协议》</span>
-        <!-- <span class="error-msg">错误提示信息</span> -->
-      </div>
-      <div class="btn">
-        <button @click="register">完成注册</button>
-      </div>
+
+      <ValidationObserver ref="form">
+        <form>
+          <div class="content">
+            <label>手机号:</label>
+            <ValidationProvider name="手机号" :rules="{required: true, regex: /^1\d{10}$/}">
+              <template slot-scope="{errors, classes}">
+                <input type="text" placeholder="请输入你的手机号" v-model="mobile" :class="classes">
+                <span class="error-msg">{{errors[0]}}</span>
+              </template>
+            </ValidationProvider>
+          </div>
+          
+          <div class="content">
+            <label>验证码:</label>
+
+            <ValidationProvider name="验证码" :rules="{required: true, regex: /^.{4}$/}">
+              <template slot-scope="{errors, classes}">
+                <input type="text" placeholder="请输入验证码" v-model="code" :class="classes">
+                <!-- http://182.92.128.115 -->
+                <img ref="code" src="/api/user/passport/code" alt="code" @click="updateCode">
+                <span class="error-msg">{{ errors[0] }}</span>
+              </template>
+            </ValidationProvider>
+
+          </div>
+          <div class="content">
+            <label>登录密码:</label>
+            <ValidationProvider name="密码" :rules="{required: true, min: 6, max: 10}">
+              <template slot-scope="{ errors, classes }">
+                <input type="password" placeholder="请输入你的登录密码" v-model="password" :class="classes">
+                <span class="error-msg">{{ errors[0] }}</span>
+              </template>
+            </ValidationProvider>
+          </div>
+          <div class="content">
+            <label>确认密码:</label>
+            <ValidationProvider name="确认密码" :rules="{required: true, is: password}">
+              <template slot-scope="{ errors,classes}">
+                <input type="password" placeholder="请输入确认密码" v-model="password2" :class="classes">
+                <span class="error-msg">{{ errors[0] }}</span>
+              </template>
+            </ValidationProvider>
+          </div>
+          <div class="controls">
+            <ValidationProvider name="协议" :rules="{oneOf: [true]}">
+              <template slot-scope="{ errors,classes}">
+                <input name="m1" type="checkbox" v-model="isAgree" :class="classes">
+                <span>同意协议并注册《尚品汇用户协议》</span>
+                <span class="error-msg">{{errors[0]}}</span>
+              </template>
+            </ValidationProvider>
+          </div>
+
+          <div class="btn">
+            <button @click.prevent="register">完成注册</button>
+          </div>
+        </form>
+      </ValidationObserver>
+      
     </div>
 
     <!-- 底部 -->
@@ -65,7 +81,8 @@
         <li>尚品汇社区</li>
       </ul>
       <div class="address">地址：北京市昌平区宏福科技园综合楼6层</div>
-      <div class="beian">京ICP备19006430号</div>
+      <div class="beian">京ICP备19006430号
+      </div>
     </div>
   </div>
 </template>
@@ -89,24 +106,31 @@ export default {
     },
     /* 注册 */
     async register() {
+      this.$refs.form.validate().then(async (success) => {
+        if (!success) {
+          return
+        }
+      });
+
       //获取输入数据
-      const { mobile, code, password, password2, isAgree } = this;
+      const { mobile, code, password} = this;
       //前台表单的验证
-      if (!isAgree) {
+     /*  if (!isAgree) {
         alert("必须同意相关协议");
         return;
       } else if (password === "" || password !== password2) {
         alert("前后两次输入的密码必须相同");
         return;
-      }
-      //验证成功
+      } */
+      //发送注册请求
       try {
-        await this.$store.dispatch('register',{mobile,code,password})
+        await this.$store.dispatch("register", { mobile, code, password });
+        //如果请求发送成功,就跳转到登录界面
         //返回成功的promise,跳转到登录界面
-        this.$router.replace('/login')
+        this.$router.replace("/login");
       } catch (error) {
-        this.updateCode(); //输入失败更新验证码
-        this.code = ""; //密码置空
+ /*        this.updateCode(); //输入失败更新验证码
+        this.code = ""; //密码置空 */
         alert(error.message);
       }
     },
@@ -165,6 +189,9 @@ export default {
           margin-left: 5px;
           outline: none;
           border: 1px solid #999;
+          &.is-invalid {
+            border: 1px solid red;
+          }
         }
 
         img {

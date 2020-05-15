@@ -12,18 +12,21 @@
     localStorage.setItem('USER_TEMP_ID_LEY',userTempId)
   }
 } */
-import { getUserTempId, saveUserInfo, getUserInfo } from "@/utils";
+import { getUserTempId, saveUserInfo, getUserInfo, removeUserInfo } from "@/utils";
 /* 用户登录注册和登出 */
-import { reqLogin, reqRegister, reqLogOut } from "@/api";
+import { reqLogin, reqRegister, reqLogout } from "@/api";
 export default {
   state: {
     userInfo: getUserInfo(),//从local中读取保存的用户信息作为初始值
     userTempId: getUserTempId(), //用户临时Id,只执行一次
   },
   mutations: {
-    RESIVE_USER_INFO(state, { userInfo }) {
+    RECEIVE_USER_INFO(state, { userInfo }) {
       state.userInfo = userInfo;
     },
+    RESET_USER_INFO(state){
+    state.userInfo={}
+    }
   },
   actions: {
     /* 注册的异步actions */
@@ -53,6 +56,18 @@ export default {
         );
       }
     },
+    /* 退出登录的异步actions */
+    async logout({commit}){
+      const result=await reqLogOut();
+      if(result.code===200){
+        //如果退出登录成功,清除vuex中的用户信息
+        commit('RESET_USER_INFO');
+        //清除localstorage中的用户信息
+        removeUserInfo()
+      }else{
+        alert(result.message||'抱歉,退出登录失败,请重试')
+      }
+    }
   },
   getters: {},
 };

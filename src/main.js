@@ -9,6 +9,11 @@ import Carousel from '@/components/Carousel'
 import store from './store'
 import Pagination from '@/components/Pagination'
 import './mock/mockServer'
+import './validate';
+//引入所有 的接口请求函数,并封装
+import * as API from '@/api'
+// 让所有组件对象可以直接看到API对象
+Vue.prototype.$API = API
 //typenav注册全局组件
 Vue.component('TypeNav',TypeNav);
 Vue.component('Carousel',Carousel)

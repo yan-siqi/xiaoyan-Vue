@@ -11,23 +11,28 @@ import axios from "axios";
 //引入显示进度条的 js 和css
 import Nprogress from "nprogress";
 import "nprogress/nprogress.css";
-import store from '@/store'
+import store from "@/store";
 
 /* 1.配置通用的基础路径 */
 const instance = axios.create({
   //配置baseUrl和请求的超时时间
-  baseURL: '/api',
- /*  baseURL:'http://182.92.128.115/api', */
+  baseURL: "/api",
+  /*  baseURL:'http://182.92.128.115/api', */
   timeout: 15000,
 });
 //设置axios 请求拦截器
-instance.interceptors.request.use(config => {
+instance.interceptors.request.use((config) => {
   console.log("设置请求拦截器");
   Nprogress.start();
   /* 每次请求都携带一个userTempId的请求头,数据存在state中 */
-  config.headers.userTempId=store.state.user.userTempId
-  return config;
+  config.headers.userTempId = store.state.user.userTempId;
 
+  /* 每次请求都携带一个token的请求头,数据存放在state中*/
+  const token = store.state.user.userInfo.token;
+  if (token) {
+    config.headers["token"] = token;
+  }
+  return config;
 });
 //设置axios响应拦截器
 instance.interceptors.response.use(
@@ -36,7 +41,7 @@ instance.interceptors.response.use(
     Nprogress.done();
     return response.data;
   },
-  error => {
+  (error) => {
     console.log("响应拦截器success回调执行"); //响应失败
     /* 统一处理请求的错误信息 */
     Nprogress.done();

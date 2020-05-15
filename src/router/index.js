@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import routes from "./routes";
+import store from "@/store"
 
 //声明使用vue插件
 Vue.use(VueRouter);
@@ -37,14 +38,33 @@ VueRouter.prototype.replace = function(location, onComplete, onAbort) {
     });
   }
 };
-//暴露一个路由器对象
-export default new VueRouter({
-  //处理#
-  mode: "history", //不带#
-  /* 配置所有路由--->使用数组 */
-  routes, //配置所有路由
-  scrollBehavior(to, from, savedPosition) {
-    //在跳转路由的时候,滚动条自动滚动到x,y轴的起始位置
-    return { x: 0, y: 0 };
-  },
-});
+/* 暴露一个路由器对象 */
+const router = new VueRouter({
+  mode: 'history', // 不带#的模式
+  routes, // 配置所有路由
+  scrollBehavior (to, from, savedPosition) {
+    return { x: 0, y: 0 }  // 在跳转路由时, 滚动条自动滚动到x轴和y轴的起始位置
+  }
+})
+/* 注册全局前置守卫 */
+//定义全部需要进行登录检查的路由路径的数组
+const checkPaths=['/trade','/pay','/center']
+/* 只有登录了,才可以查看交易/支付/个人中心的界面 */
+router.beforeEach((to, from, next) => {//在即将跳转之前
+  const targetPath=to.path//可能是支付成功/用户中心/我的订单
+  //如果当前目标路由是需要检查的
+  const isCheckPath=checkPaths.some(path=>targetPath.indexOf(path)===0)
+  if(isCheckPath){
+    //如果当前路由需要检查,并且登陆成功的话,就放行
+    if(store.state.user.userInfo.name){
+      next()
+    }else{
+      next('/login?redirect='+targetPath)//如果没有登陆成功,自动跳转到登录页面
+    }
+  }else{
+    //如果当前路由是不需要进行检查的,就直接放行
+    next()
+  }
+  
+})
+export default router
